@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lbt.dao.AddressDao">
+	<!--       根据用户id查所有地址                -->
+  	<select id="getAddressByUserId" resultType="Address">
+  		select * from dd_address where user_id = #{user_id}
+  	</select>
+  	<!--       根据地址id查一条地址                        -->
+  	<select id="getAddressById" resultType="Address">
+  		select * from dd_address where id = #{id}
+  	</select>
+  	<!--       添加地址            -->
+  	<insert id="addAddress">
+  		insert into dd_address values(#{address.id},#{address.name},#{address.local},#{address.zip_code},#{address.phone},#{address.user_id})
+  	</insert>
+  	<update id="updateAddress">
+  		update dd_address set name=#{address.name},local=#{address.local},zip_code=#{address.zip_code},phone=#{address.phone},user_id=#{address.user_id} where id=#{address.id} 
+  	</update>
+</mapper>

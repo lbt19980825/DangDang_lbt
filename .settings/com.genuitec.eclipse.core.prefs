@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+validator.Checked=src/main/webapp/com/lbt/front/js,src/main/webapp/com/lbt/back/js,WebRoot
+validator.Revalidate=true
+validator.Unchecked=

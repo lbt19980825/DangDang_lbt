@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" "http://struts.apache.org/dtds/struts-2.3.dtd" >
+<struts>
+
+	<package name="front" extends="struts-default" namespace="/front">
+		<action name="main" class="com.lbt.action.FrontAction" method="mainAction">
+			<result name="showMainSuccess">/com/lbt/front/main/main.jsp</result>
+		</action>
+		
+		<action name="ShowBookDetail" class="com.lbt.action.FrontAction" method="showBookDetail">
+			<result name="showBookDetailSuccess">/com/lbt/front/main/book_detail.jsp</result>
+		</action>
+		
+		
+		<!--    跳转展示二级图书页面        -->
+		<action name="ShowSecondLevelBook" class="com.lbt.action.FrontAction" method="showSecondLevelBook">
+			<result name="showSecondLevelBookSuccess">/com/lbt/front/main/book_list.jsp</result>
+		</action>
+		
+		
+		<!--   购物车功能      -->
+			<!--   添加购物车    -->
+			<action name="CartAction"  class="com.lbt.action.FrontAction" method="cartAction">
+				<result name="cartSuccess" type="redirect">/com/lbt/front/cart/cart_list.jsp</result>
+			</action>
+			<!--   购物车修改       -->
+			<action name="UpdateCart" class="com.lbt.action.FrontAction" method="updateCart">
+				<result name="updateCartSuccess">/com/lbt/front/cart/cart_list.jsp</result>
+			</action>
+			<!--  删除一条购物车     -->
+			<action name="DeleteCart" class="com.lbt.action.FrontAction" method="deleteCart" >
+				<result name="deleteCartSuccess">/com/lbt/front/cart/cart_list.jsp</result>
+			</action>
+	</package>
+	
+	
+	<!--        用户模块                      -->
+	<package name="user" extends="struts-default" namespace="/user">
+		<!--     登录功能         -->
+		<action name="LoginUser" class="com.lbt.action.UserAction" method="loginUser">
+			<result name="loginUserSuccess" type="redirectAction">
+				<param name="namespace">/front</param>
+				<param name="actionName">main</param>
+			</result>
+			<result name="loginUserError">/com/lbt/front/user/login_form.jsp</result>
+		</action>
+		<!--        注册功能                 -->
+		<action name="RegistUser" class="com.lbt.action.UserAction" method="registUser">
+			<result name="registUserSuccess" type="redirectAction">ActiveCode</result>
+			<result name="registUserError">/com/lbt/front/user/register_form.jsp</result>
+		</action>
+		<!--        获取激活码                -->
+		<action name="ActiveCode" class="com.lbt.action.UserAction" method="activeCode">
+			<result name="activeCodeSuccess">/com/lbt/front/user/verify_form.jsp</result>
+		</action>
+		<!--     激活用户        -->
+		<action name="ActiveUser" class="com.lbt.action.UserAction" method="activeUser">
+			<result name="activeUserSuccess">/com/lbt/front/user/register_ok.jsp</result>
+			<result name="activeUserError" type="redirectAction">ActiveCode</result>
+		</action>
+		<!--      安全退出        -->
+		<action name="UserExit" class="com.lbt.action.UserAction" method="userExit">
+			<result name="userExitSuccess" type="redirectAction">
+				<param name="namespace">/front</param>
+				<param name="actionName">main</param>
+			</result>
+		</action>
+		<!--           获取所有用户                          -->
+		<action name="GetAllUser" class="com.lbt.action.UserAction" method="getAllUser">
+			<result name="getAllUserSuccess">/com/lbt/back/user/show.jsp</result>
+		</action>
+		
+		<!--            更改用户状态                            -->
+		<action name="UpdateUserStatus" class="com.lbt.action.UserAction" method="updateUserStatus">
+			<result name="updateUserStatusSuccess" type="redirectAction">GetAllUser</result>
+		</action>
+	</package>
+	
+	
+	<package name="address" extends="struts-default" namespace="/address">
+		    <interceptors>
+           <interceptor name="FrontLoginInterceptor" class="com.lbt.interceptor.FrontLoginInterceptor"></interceptor>
+           <interceptor-stack name="MyStack">
+              <interceptor-ref name="defaultStack"></interceptor-ref>
+              <interceptor-ref name="FrontLoginInterceptor"></interceptor-ref>
+           </interceptor-stack>
+        </interceptors> 
+		<action name="GetOldAddress" class="com.lbt.action.AddressAction" method="getOldAddress">
+			<interceptor-ref name="MyStack"></interceptor-ref>
+			<result name="getAddressSuccess">/com/lbt/front/order/address_form.jsp</result>
+			<result name="userlogin">/com/lbt/front/user/login_form.jsp</result>
+			<result name="useractive" type="redirectAction">
+				<param name="namespace">/user</param>
+				<param name="actionName">ActiveCode</param>
+			</result>
+		</action>
+	</package>
+	
+	<package name="order" extends="struts-default" namespace="/order">
+		<!--     添加订单          -->
+		<action name="AddOrder" class="com.lbt.action.OrderAction" method="addOrder">
+			<result name="addOrderSuccess">/com/lbt/front/order/order_ok.jsp</result>
+		</action>
+		<action name="AllOrder" class="com.lbt.action.OrderAction" method="AllOrder">
+			<result name="AllOrderSuccess">/com/lbt/back/order/show.jsp</result>
+		</action>
+		
+		<action name="DetailInform" class="com.lbt.action.OrderAction" method="detailInform">
+			<result name="detailInformSuccess">/com/lbt/back/order/detail.jsp</result>
+		</action>
+	</package>
+
+</struts>

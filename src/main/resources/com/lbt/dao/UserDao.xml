@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lbt.dao.UserDao">
+  	<select id="queryUserByEmail" resultType="User">
+  		select * from dd_user where email=#{email}
+  	</select>
+  	<insert id="insertUser">
+  		insert into dd_user values(#{user.id},#{user.nickname},#{user.email},#{user.password},#{user.status},#{user.code,jdbcType=VARCHAR},#{user.create_date},#{user.salt})
+  	</insert>
+  	<update id="UpdateUser">
+  		update dd_user set code=#{user.code} where id=#{user.id}
+  	</update>
+  	<select id="getAllUser" resultType="User">
+  		select * from dd_user
+  	</select>
+  	<update id="updateUser" >
+  		update dd_user set status = #{user.status} where email = #{user.email}
+  	</update>
+</mapper>

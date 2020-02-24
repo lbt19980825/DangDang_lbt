@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lbt.dao.OrderDao">
+	<insert id="insertOrder">
+		insert into dd_order values(#{order.id,jdbcType=VARCHAR},#{order.order_name},#{order.total},#{order.create_date},#{order.address_id},#{order.user_id},#{order.name},#{order.local})
+	</insert>
+	<select id="allOrder" resultType="Order">
+		select * from dd_order 
+	</select>
+	<select id="getOrderById" resultType="Order">
+		select * from dd_order where id = #{id}
+	</select>
+</mapper>

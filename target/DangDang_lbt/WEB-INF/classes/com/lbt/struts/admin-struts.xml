@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 定义一个拦截器 -->
+	<package name="inter" extends="struts-default">
+		<interceptors>
+			<interceptor name="excp" class="com.lbt.interceptor.AdminExceptionInterceptor"></interceptor>
+			<interceptor-stack name="excps">
+				<interceptor-ref name="excp"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>	
+	</package>
+  
+  <package name="admin" extends="inter" namespace="/admin">
+  		<interceptors>
+			<interceptor name="login" class="com.lbt.interceptor.LoginInterceptor"></interceptor>
+			<interceptor-stack name="logins">
+				<interceptor-ref name="login"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<global-results>
+			<result name="returnlogin">/com/lbt/back/login.jsp</result>
+		</global-results>
+     	<!--      从后台登录页面提交数据到登录的action，成功跳后台管理主页面，失败返回登录页面        -->
+  	<action name="LoginAction" class="com.lbt.action.AdminAction" method="login"> 
+  	    <interceptor-ref name="excps"></interceptor-ref>
+  		<result name="loginSuccess">/com/lbt/back/main/main.jsp</result>
+  		<result name="loginError">/com/lbt/back/login.jsp</result>
+  	</action>
+  	<!--    获取验证码，获取成功跳后台登录页面      -->
+  	<action name="getCode" class="com.lbt.action.AdminAction" method="getCode"></action>
+  	<action name="exit" class="com.lbt.action.AdminAction" method="exit">
+  		<result name="exitSuccess">/com/lbt/back/login.jsp</result>
+  	</action>
+  	<!--    点击类别管理，跳展示所有类别的action，然后跳转至类别管理页面     -->
+  	<action name="ShowAllCategory" class="com.lbt.action.AdminAction" method="showCategory">
+  		 <interceptor-ref name="logins"></interceptor-ref>
+  		<result name="showSuccess">/com/lbt/back/category/show.jsp</result>
+  	</action>
+  	<!--   点击添加一级类别，跳添加一级类别的页面，然后点击提交跳添加一级类别的action，然后跳展示所有类别的action     -->
+   	<action name="AddFirstCategory" class="com.lbt.action.AdminAction" method="addFirstCategory">
+   		<interceptor-ref name="logins"></interceptor-ref>
+  		<result name="addSuccess" type="redirectAction">ShowAllCategory</result>
+  	</action> 
+  	<!--   点击添加二级类别按钮，跳查询所有一级类别的action，然后跳添加二级类别页面，供下拉列表展示 -->
+  	<action name="QueryFirstCategory" class="com.lbt.action.AdminAction" method="queryFirstCategory">
+  		<result name="queryFirstSuccess">/com/lbt/back/category/add-second.jsp</result>
+  	</action>
+  	<!--  点击添加二级类别页面的提交按钮，跳添加二级页面的action，然后跳展示所有类别的action      -->
+  	<action name="AddSecondCategory" class="com.lbt.action.AdminAction" method="addSecondCategory">
+  		<interceptor-ref name="logins"></interceptor-ref>
+  		<result name="addSecondSuccess" type="redirectAction">ShowAllCategory</result>
+  	</action>
+  	<!--   点击删除按钮，跳删除类别的action，然后跳展示所有类别的action -->
+  	<action name="deleteCategory" class="com.lbt.action.AdminAction" method="deleteCategory">
+  		<interceptor-ref name="logins"></interceptor-ref>
+  	    <interceptor-ref name="excps"></interceptor-ref>
+  		<result name="deleteSuccess" type="redirectAction">ShowAllCategory</result>
+  	 	<result name="deleteError" type="redirectAction">ShowAllCategory</result> 
+  		
+  		
+  	</action>
+  </package>
+  
+  
+  
+  
+  <package name="book" extends="inter" namespace="/book">
+	<interceptors>
+		<interceptor name="login" class="com.lbt.interceptor.LoginInterceptor"></interceptor>
+		<interceptor-stack name="logins">
+			<interceptor-ref name="login"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</interceptor-stack>
+	</interceptors>
+	<global-results>
+			<result name="returnlogin">/com/lbt/back/login.jsp</result>
+		</global-results>
+  	<action name="ShowAllBook" class="com.lbt.action.BookAction" method="showAllBook">
+  		 <interceptor-ref name="logins"></interceptor-ref>
+  		<result name="showBookSuccess">/com/lbt/back/book/show.jsp</result>
+  	</action>
+  	
+  	<action name="GetSecondCategory" class="com.lbt.action.BookAction" method="GetSecondCategory">
+  	  		 <interceptor-ref name="logins"></interceptor-ref>
+  	
+  		<result name="getSuccess">/com/lbt/back/book/add.jsp</result>
+  	</action>
+  	
+  	<action name="AddBook" class="com.lbt.action.BookAction" method="addBook"> 
+  	  	<interceptor-ref name="logins"></interceptor-ref>
+  	  	<interceptor-ref name="excps"></interceptor-ref>
+  		<result name="addBookSuccess" type="redirectAction">ShowAllBook</result>
+  		<result name="addError">/com/lbt/back/book/add.jsp</result>
+  	</action>
+  	<action name="GetCurrentBook"  class="com.lbt.action.BookAction" method="getCurrentBook">
+  	  	<interceptor-ref name="logins"></interceptor-ref>
+  		<result name="getBookSuccess">/com/lbt/back/book/update.jsp</result>
+  	</action>
+  	<action name="UpdateBook" class="com.lbt.action.BookAction" method="updateBook">
+  	  	<interceptor-ref name="logins"></interceptor-ref>
+  		<result name="updateSuccess" type="redirectAction">ShowAllBook</result>	
+  		<result name="updateError" type="redirectAction">ShowAllBook</result>
+  	</action>
+  	<action name="DeleteBook" class="com.lbt.action.BookAction" method="deleteBook">
+  	  	<interceptor-ref name="logins"></interceptor-ref>
+  		<result name="deleteSuccess" type="redirectAction">ShowAllBook</result>
+  	</action>
+  	<action name="DimQuery" class="com.lbt.action.BookAction" method="dimQuery">
+  	  	 <interceptor-ref name="logins"></interceptor-ref>
+  		<result name="dimSuccess" >/com/lbt/back/book/show.jsp</result>
+  	</action>
+  </package>
+  
+</struts>

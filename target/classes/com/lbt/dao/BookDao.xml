@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lbt.dao.BookDao">
+	<!--     查所有图书        -->
+ 	<select id="queryAllBook" resultType="Book" >
+ 		select id,name,author,price,dprice,press,press_date,cover,stock,sale,content_abstract from dd_book 
+ 	</select>
+ 	<!--      查所有二级类别           -->
+ 	<select id="queryAllTwoCategory" resultType="Book">
+ 		select * from dd_category where levels='2'
+ 	</select>
+ 	
+ 	<insert id="insertBook">
+ 		insert into dd_book values(#{id},#{name},#{author},#{cover},#{press},#{press_date},#{edition},#{print_date},#{impression},#{isbn},#{word_num},#{page_num},#{sizes},#{paper},#{pack},#{price},#{dprice},#{create_date},#{editior_recommend,jdbcType=VARCHAR},#{content_abstract},#{author_abstract},#{director},#{media_commentary},#{category_id},#{sale },#{stock })
+ 	</insert>
+ 	
+ 	<select id="queryBookById" resultType="Book">
+ 		select * from dd_book where id=#{id}
+ 	</select>
+ 	
+ 	<select id="queryCategoryById" resultType="CAtegory">
+ 		select * from dd_category where id=#{id,jdbcType=VARCHAR}
+ 	</select>
+ 	
+ 	<update id="updateBook">
+ 		update dd_book set name=#{name,jdbcType=VARCHAR},author=#{author}<if test="cover!=null">,cover=#{cover}</if>,press=#{press,jdbcType=VARCHAR},press_date=#{press_date},edition=#{edition},print_date=#{print_date},impression=#{impression},isbn=#{isbn},word_num=#{word_num},page_num=#{page_num,jdbcType=VARCHAR},sizes=#{sizes,jdbcType=VARCHAR},paper=#{paper},pack=#{pack},price=#{price},dprice=#{dprice},create_date=#{create_date,jdbcType=NULL},editior_recommend=#{editior_recommend,jdbcType=VARCHAR},content_abstract=#{content_abstract},author_abstract=#{author_abstract},director=#{director},media_commentary=#{media_commentary},category_id=#{category_id},sale=#{sale},stock=#{stock}where id=#{id}
+ 		
+ 	</update>
+ 	
+ 	<delete id="deleteBook">
+ 		delete dd_book where id=#{id}
+ 	</delete>
+ 	
+ 	<select id="dimQueryBook" resultType="Book">
+ 		select id,name,author,price,dprice,press,press_date,cover,stock,sale from dd_book
+ 		<where>
+ 			<if test="key=='name'">name like '%${content}%'</if>
+ 			<if test="key=='author'">author like '%${content}%'</if>
+ 			<if test="key=='press'">press like '%${content}%'</if>
+ 		</where>
+ 	</select>
+ 	
+ 	<select id="queryPartBook" resultType="Book">
+		 select b.* from (select * from dd_book order by sale desc) b where sale!=0 and  rownum between 1 and 8
+ 	</select>
+ 	<select id="queryPartBookByCreateDate" resultType="Book">
+ 		select b.* from (select * from dd_book order by create_date desc) b  where  rownum between 1 and 8
+ 	</select>
+ 	<select id="queryPartBookBySaleAndCreateDate" resultType="Book">
+ 		select b.* from(select * from dd_book order by create_date,sale desc) b where rownum between 1 and 8
+ 	</select>
+ 	
+ 	
+ 	<!--     根据id的不同查找不同类型的图书,并分页      -->
+ 	<select id="queryPartBookByFifAndSidAndPageBean" resultType="Book">
+ 		select * from (select b.*,rownum rn from (select w.* from (select * from dd_book 
+ 			<if test="orderType=='bySaleDate'">
+ 			order by sale desc  
+ 			</if>
+ 			 <if test="orderType=='byCreateDate'">
+ 			order by create_date desc    
+ 			</if>
+ 			 <if test="orderType=='byDprice'">
+ 			order by dprice     
+ 			</if>
+ 			<if test="orderType=='byDpriceDesc'">
+ 			order by dprice desc     
+ 			</if>
+ 		)w 
+ 		         <where>
+ 		         	<choose>
+ 		         		<when test="sid==null||sid==''">category_id in(select id from  dd_category where parent_id=#{fid})    
+ 		         		</when>
+ 		         		<otherwise>
+ 		         			category_id=#{sid}  
+ 		         		</otherwise>
+ 		         	</choose>
+ 		         </where>) b ) where rn between #{pagebean.begin} and #{pagebean.end}
+
+ 	</select>
+ 	
+ 	<!--     根据id的不同查找不同类型的图书数量    -->
+ 	<select id="queryPartBookCount" resultType="Integer">
+ 		select count(*) from dd_book 
+ 		         <where>
+ 		         	<choose>
+ 		         		<when test="sid==null||sid==''">category_id in(select d.id from dd_category d where parent_id=#{fid})
+ 		         		</when>
+ 		         		<otherwise>
+ 		         			category_id=#{sid}
+ 		         		</otherwise>
+ 		         	</choose>
+ 		         </where>
+ 	</select>
+ 	
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lbt.dao.CategoryDao">
+	<resultMap type="Category" id="res1">
+		<id column="fid" property="id"/>
+		<id column="fname" property="name"/>
+		<id column="levels" property="levels"/>
+		<association property="category" javaType="Category">
+			<id column="sid" property="id"/>
+			<id column="sname" property="name"/>
+		</association>
+	</resultMap>
+
+ 	<select id="queryAll" resultMap="res1" >
+ 		select f.id fid,f.name fname,f.levels,s.id sid,s.name sname
+ 			   from dd_category f left join dd_category s
+ 			   on f.parent_id=s.id 
+ 	</select>
+ 	
+  	<insert id="insert" >
+ 		insert into dd_category values(#{category.id},#{category.name,jdbcType=NULL},#{category.parent_id,jdbcType=NULL},#{category.levels})
+ 	</insert> 
+ 	
+ 	<select id="queryFirstCategory" resultType="Category">
+ 		select * from dd_category where levels='1'
+ 	</select>
+ 	
+ 	<resultMap type="Category" id="res2">
+ 		<id column="fid" property="id"/>
+ 		<id column="fname" property="name"/>
+ 		<id column="flevels" property="levels"/>
+ 		<association property="category" javaType="Category">
+	 		<id column="sid" property="id"/>
+	 		<id column="sname" property="name"/>
+	 		<id column="slevels" property="levels"/>
+ 		</association>
+ 	</resultMap>
+ 	<select id="queryFitstAndSecondCategory" resultMap="res2">
+ 		select f.id fid,f.name fname,f.levels flevels,s.id sid,s.name sname,s.levels slevels
+ 			   from dd_category f left join dd_category s
+ 			   on f.id=s.parent_id
+ 			   where f.levels='1' and f.id=#{id} 
+ 	</select>
+ 	
+ 	<delete id="deleteById">
+ 		delete from dd_category where id=#{id}
+ 	</delete>
+ 	
+	<select id="queryBookById" resultType="Book">
+		select * from dd_book where category_id=#{id}
+	</select>
+	
+	<resultMap type="Category" id="res3">
+		<id column="fid" property="id"/>
+		<id column="fname" property="name"/>
+		<id column="flevels" property="levels"/>
+		<collection property="sons" ofType="Category">
+			<id column="sname" property="name"/>
+			<id column="slevels" property="levels"/>
+			<id column="sid" property="id"/>
+		</collection>
+	</resultMap>
+	<select id="queryAllCategory" resultMap="res3">
+		select f.id fid,f.name fname,f.levels flevels,s.name sname,s.id sid,s.levels slevels
+		      from dd_category f left join dd_category s
+		      on f.id=s.parent_id where f.levels='1'
+	</select>
+	
+	
+	 <resultMap type="Category" id="res4">
+ 		<id column="fid" property="id"/>
+ 		<id column="fname" property="name"/>
+ 		<id column="flevels" property="levels"/>
+ 		<collection property="sons" ofType="Category">
+	 		<id column="sid" property="id"/>
+	 		<id column="sname" property="name"/>
+	 		<id column="slevels" property="levels"/>
+ 		</collection>
+ 	</resultMap>
+ 	<select id="queryFitstAndSecondCategoryById" resultMap="res4">
+ 		select f.id fid,f.name fname,f.levels flevels,s.id sid,s.name sname,s.levels slevels
+ 			   from dd_category f left join dd_category s
+ 			   on f.id=s.parent_id
+ 			   where f.levels='1' and f.id=#{id} 
+ 	</select>
+
+</mapper>
